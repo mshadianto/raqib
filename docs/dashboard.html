@@ -104,7 +104,10 @@
   </div>
 
   <script>
-  window.addEventListener("DOMContentLoaded", function() {
+  function boot() {
+    if (typeof React === 'undefined' || typeof ReactDOM === 'undefined' || typeof htm === 'undefined' || typeof Recharts === 'undefined') {
+      return setTimeout(boot, 20);
+    }
     var html = htm.bind(React.createElement);
     var useState = React.useState;
     var useEffect = React.useEffect;
@@ -897,7 +900,8 @@
     }
 
     ReactDOM.createRoot(document.getElementById('root')).render(html`<${MoniDashboard} />`);
-  });
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
   </script>
 </body>
 </html>

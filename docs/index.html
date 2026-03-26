@@ -74,9 +74,9 @@
   </div>
 
   <!-- App script — runs after React + htm are loaded -->
-  <script defer>
-  window.addEventListener('DOMContentLoaded', function wait() {
-    if (typeof React === 'undefined' || typeof htm === 'undefined') return setTimeout(wait, 10);
+  <script>
+  function wait() {
+    if (typeof React === 'undefined' || typeof ReactDOM === 'undefined' || typeof htm === 'undefined') return setTimeout(wait, 20);
 
     var h = React.createElement;
     var html = htm.bind(h);
@@ -317,7 +317,8 @@
     }
 
     ReactDOM.createRoot(document.getElementById('root')).render(html`<${RaqibLanding}/>`);
-  });
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', wait); } else { wait(); }
   </script>
 </body>
 </html>
