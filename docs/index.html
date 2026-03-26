@@ -4,429 +4,317 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RAQIB — The Watchful Guardian of Compliance</title>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://unpkg.com/lucide-react@0.460.0/dist/umd/lucide-react.min.js"></script>
+  <meta name="description" content="12 AI agents. Zero blind spots. The only GRC platform with Sharia compliance built into its DNA." />
+
+  <!-- Preconnect for speed -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+  <!-- Fonts: <link> with display=swap instead of render-blocking @import -->
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Big+Shoulders+Display:wght@700;800&family=JetBrains+Mono:wght@400;600&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Critical CSS inlined — no FOUC -->
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:#F5F0E6;overflow-x:hidden}
+    #skeleton{font-family:'Crimson Pro',Georgia,serif;color:#0B1120}
+    .sk-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,240,230,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(200,148,62,0.15);padding:0 32px;height:64px;display:flex;align-items:center}
+    .sk-nav-inner{max-width:1200px;margin:0 auto;width:100%;display:flex;justify-content:space-between;align-items:center}
+    .sk-brand{display:flex;align-items:center;gap:10px;font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:22px;letter-spacing:0.04em}
+    .sk-hero{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0B1120;padding-top:64px;text-align:center}
+    .sk-hero-inner{max-width:800px;padding:0 24px}
+    .sk-arabic{font-family:'Noto Naskh Arabic',serif;font-size:48px;color:#C8943E;margin-bottom:16px;direction:rtl}
+    .sk-h1{font-family:'Big Shoulders Display',sans-serif;font-size:64px;font-weight:800;color:#FAFAF7;line-height:1.05;letter-spacing:-0.02em}
+    .sk-sub{font-size:19px;color:#E8C47A;max-width:560px;margin:24px auto 0;line-height:1.7;font-style:italic}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes shimmer{0%,100%{opacity:0.6}50%{opacity:1}}
+    .fade-up{animation:fadeUp 0.8s ease-out both}
+    .fade-up-d1{animation-delay:0.1s}.fade-up-d2{animation-delay:0.2s}.fade-up-d3{animation-delay:0.3s}.fade-up-d4{animation-delay:0.4s}
+    .btn-gold{background:linear-gradient(135deg,#C8943E,#A67A2E);color:#fff;border:none;padding:14px 32px;border-radius:8px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px}
+    .btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(200,148,62,0.3)}
+    .btn-outline{background:transparent;color:#0B1120;border:1.5px solid #C8943E;padding:13px 32px;border-radius:8px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s}
+    .btn-outline:hover{background:#C8943E;color:#fff}
+    #root:not(:empty)+#skeleton{display:none}
+  </style>
+
+  <!-- React: defer so HTML paints immediately -->
+  <script defer crossorigin src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script defer crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <!-- htm: 700 bytes — replaces 1.8MB Babel standalone -->
+  <script defer src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
 </head>
-<body style="margin: 0; padding: 0; background: #F5F0E6;">
+<body>
+
   <div id="root"></div>
 
-  <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
-    const { Shield, Eye, BarChart3, FileText, Bot, ChevronRight, Globe, Zap, Lock, Bell, TrendingUp, Users, CheckCircle, ArrowRight, Menu, X } = lucideReact;
+  <!-- Instant skeleton — visible before any JS loads -->
+  <div id="skeleton">
+    <div class="sk-nav"><div class="sk-nav-inner">
+      <div class="sk-brand">
+        <svg width="32" height="32" viewBox="0 0 48 48" fill="none"><rect x="12" y="6" width="24" height="36" rx="6" stroke="#0B1120" stroke-width="2"/><circle cx="24" cy="24" r="7" fill="#0B1120"/><circle cx="24" cy="24" r="3.5" fill="#F5F0E6"/><circle cx="24" cy="23" r="1.5" fill="#0B1120"/></svg>
+        RAQIB
+      </div>
+      <div style="display:flex;align-items:center;gap:32px;font-family:'Crimson Pro',serif;font-size:14px">
+        <a href="#features" style="color:#2D3748;text-decoration:none">Features</a>
+        <a href="#agents" style="color:#2D3748;text-decoration:none">Agents</a>
+        <a href="#pricing" style="color:#2D3748;text-decoration:none">Pricing</a>
+        <a href="./dashboard.html" style="color:#2D3748;text-decoration:none">Dashboard</a>
+      </div>
+    </div></div>
+    <div class="sk-hero"><div class="sk-hero-inner">
+      <div class="sk-arabic fade-up">رقيب</div>
+      <h1 class="sk-h1 fade-up fade-up-d1">The Watchful Guardian<br>of Compliance</h1>
+      <p class="sk-sub fade-up fade-up-d2">12 AI agents. Zero blind spots. The only GRC platform with Sharia compliance built into its DNA.</p>
+      <div class="fade-up fade-up-d3" style="display:flex;gap:16px;justify-content:center;margin-top:40px">
+        <button class="btn-gold" style="font-size:16px;padding:16px 36px">Start free →</button>
+        <button class="btn-outline" style="color:#E8C47A;border-color:rgba(232,196,122,0.3)">Watch demo</button>
+      </div>
+    </div></div>
+  </div>
 
-    const GOLD = "#C8943E";
-    const GOLD_L = "#E8C47A";
-    const DEEP = "#0B1120";
-    const CREAM = "#F5F0E6";
-    const TEAL = "#0D7377";
-    const CORAL = "#C75C3A";
+  <!-- App script — runs after React + htm are loaded -->
+  <script defer>
+  window.addEventListener('DOMContentLoaded', function wait() {
+    if (typeof React === 'undefined' || typeof htm === 'undefined') return setTimeout(wait, 10);
 
-    function GeometricPattern({ opacity = 0.06, color = GOLD }) {
-      const circles = [];
-      for (let row = 0; row < 8; row++) {
-        for (let col = 0; col < 12; col++) {
-          const cx = col * 52 + (row % 2 ? 26 : 0);
-          const cy = row * 52;
-          circles.push(<circle key={`${row}-${col}`} cx={cx} cy={cy} r={20} fill="none" stroke={color} strokeWidth="0.5" opacity={opacity} />);
-        }
+    var h = React.createElement;
+    var html = htm.bind(h);
+    var useState = React.useState, useEffect = React.useEffect, useRef = React.useRef;
+
+    // ─── Colors ──────────────────────────────────
+    var GOLD="#C8943E",GOLD_L="#E8C47A",DEEP="#0B1120",CREAM="#F5F0E6",TEAL="#0D7377",CORAL="#C75C3A";
+
+    // ─── Inline SVG Icons (replace 400KB lucide-react) ──
+    function Icon(props) {
+      var s = props.size || 24, c = props.color || "currentColor";
+      return html`<svg width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke=${c} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style=${{display:'inline-block',verticalAlign:'middle',flexShrink:0}} dangerouslySetInnerHTML=${{__html: props.d}} />`;
+    }
+    function Shield(p){return html`<${Icon} ...${p} d='<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>' />`}
+    function TrendingUp(p){return html`<${Icon} ...${p} d='<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>' />`}
+    function FileText(p){return html`<${Icon} ...${p} d='<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>' />`}
+    function Bot(p){return html`<${Icon} ...${p} d='<rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/>' />`}
+    function Lock(p){return html`<${Icon} ...${p} d='<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>' />`}
+    function Globe(p){return html`<${Icon} ...${p} d='<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>' />`}
+    function CheckCircle(p){return html`<${Icon} ...${p} d='<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' />`}
+    function ArrowRight(p){return html`<${Icon} ...${p} d='<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>' />`}
+
+    // ─── Components ──────────────────────────────
+    function GeometricPattern(props) {
+      var opacity = props.opacity || 0.06, color = props.color || GOLD;
+      var circles = [];
+      for (var row=0; row<8; row++) for (var col=0; col<12; col++) {
+        var cx = col*52+(row%2?26:0), cy = row*52;
+        circles.push(html`<circle key=${row+"-"+col} cx=${cx} cy=${cy} r="20" fill="none" stroke=${color} stroke-width="0.5" opacity=${opacity}/>`);
       }
-      return <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "hidden", pointerEvents: "none" }} viewBox="0 0 620 420" preserveAspectRatio="xMidYMid slice">{circles}</svg>;
+      return html`<svg style=${{position:"absolute",inset:0,width:"100%",height:"100%",overflow:"hidden",pointerEvents:"none"}} viewBox="0 0 620 420" preserveAspectRatio="xMidYMid slice">${circles}</svg>`;
     }
 
-    function ShieldLogo({ size = 48, dark = false }) {
-      const bg = dark ? DEEP : "transparent";
-      const stroke = dark ? GOLD : DEEP;
-      const fill = dark ? GOLD : DEEP;
-      return (
-        <svg width={size} height={size} viewBox="0 0 48 48" fill="none">
-          <rect x="12" y="6" width="24" height="36" rx="6" stroke={stroke} strokeWidth="2" fill={bg} />
-          <circle cx="24" cy="24" r="7" fill={fill} />
-          <circle cx="24" cy="24" r="3.5" fill={dark ? DEEP : CREAM} />
-          <circle cx="24" cy="23" r="1.5" fill={dark ? GOLD_L : DEEP} />
-        </svg>
-      );
+    function ShieldLogo(props) {
+      var size=props.size||48, dark=props.dark;
+      var bg=dark?DEEP:"transparent",stroke=dark?GOLD:DEEP,fill=dark?GOLD:DEEP;
+      return html`<svg width=${size} height=${size} viewBox="0 0 48 48" fill="none">
+        <rect x="12" y="6" width="24" height="36" rx="6" stroke=${stroke} stroke-width="2" fill=${bg}/>
+        <circle cx="24" cy="24" r="7" fill=${fill}/><circle cx="24" cy="24" r="3.5" fill=${dark?DEEP:CREAM}/>
+        <circle cx="24" cy="23" r="1.5" fill=${dark?GOLD_L:DEEP}/>
+      </svg>`;
     }
 
-    function AnimatedCounter({ end, suffix = "", prefix = "", duration = 2000 }) {
-      const [count, setCount] = useState(0);
-      const ref = useRef(null);
-      const started = useRef(false);
-
-      useEffect(() => {
-        const observer = new IntersectionObserver(([entry]) => {
-          if (entry.isIntersecting && !started.current) {
-            started.current = true;
-            const start = Date.now();
-            const tick = () => {
-              const elapsed = Date.now() - start;
-              const progress = Math.min(elapsed / duration, 1);
-              const eased = 1 - Math.pow(1 - progress, 3);
-              setCount(Math.floor(eased * end));
-              if (progress < 1) requestAnimationFrame(tick);
-            };
-            tick();
+    function AnimatedCounter(props) {
+      var end=props.end, suffix=props.suffix||"", duration=props.duration||2000;
+      var countState = useState(0), count=countState[0], setCount=countState[1];
+      var ref = useRef(null), started = useRef(false);
+      useEffect(function(){
+        var obs = new IntersectionObserver(function(entries){
+          if(entries[0].isIntersecting && !started.current){
+            started.current=true;
+            var t0=Date.now();
+            (function tick(){
+              var p=Math.min((Date.now()-t0)/duration,1);
+              setCount(Math.floor((1-Math.pow(1-p,3))*end));
+              if(p<1) requestAnimationFrame(tick);
+            })();
           }
-        }, { threshold: 0.3 });
-        if (ref.current) observer.observe(ref.current);
-        return () => observer.disconnect();
-      }, [end, duration]);
-
-      return <span ref={ref}>{prefix}{count.toLocaleString("id-ID")}{suffix}</span>;
+        },{threshold:0.3});
+        if(ref.current) obs.observe(ref.current);
+        return function(){obs.disconnect()};
+      },[end,duration]);
+      return html`<span ref=${ref}>${count.toLocaleString("id-ID")}${suffix}</span>`;
     }
 
+    // ─── Feature data ────────────────────────────
+    var features = [
+      {icon:Shield,title:"Regulatory monitoring",desc:"POJK, DSN-MUI, ISO, BI, OJK — scanned every 6 hours by the NIZAM agent. Classified by severity. Alerts via WhatsApp.",color:CORAL},
+      {icon:TrendingUp,title:"Portfolio tracking",desc:"Sharia-compliant instruments: sukuk, gold, mutual funds, deposits. Real-time pricing during IDX market hours.",color:TEAL},
+      {icon:FileText,title:"Audit trail",desc:"Every action logged. AURIX agent performs Benford's Law analysis and ISA 240 fraud detection on your data.",color:GOLD},
+      {icon:Bot,title:"12 AI agents",desc:"From MONI (command) to MUHTASIB (internal control). Each agent carries an Arabic name embodying its GRC role.",color:"#6366F1"},
+      {icon:Lock,title:"Schema-per-tenant",desc:"PostgreSQL isolation per organization. Your data never touches another tenant's schema. Enterprise-grade security.",color:DEEP},
+      {icon:Globe,title:"Dual payment gateway",desc:"Stripe for international. Midtrans for Indonesian customers. Pay in IDR or USD. Invoices in both languages.",color:"#2D7A4F"}
+    ];
+    var agentTiers = [
+      {tier:"Executive",color:GOLD,agents:[{id:"MONI",desc:"Chief Command — orchestrates all agents"},{id:"FALAH",desc:"Sharia wealth management & portfolio"},{id:"AURIX",desc:"AI audit intelligence & fraud detection"}]},
+      {tier:"Director",color:TEAL,agents:[{id:"TAKWA",desc:"Governance & ethics"},{id:"AMANAH",desc:"Risk management"},{id:"HIKMAH",desc:"Strategic intelligence"},{id:"BASYAR",desc:"HR & people analytics"}]},
+      {tier:"Lead",color:"#64748B",agents:[{id:"NIZAM",desc:"Regulatory intel"},{id:"AMAN",desc:"Cybersecurity"},{id:"RA'IS",desc:"Communications"},{id:"WASIT",desc:"Quality assurance"},{id:"MUHTASIB",desc:"Internal control"}]}
+    ];
+    var plans = [
+      {id:"starter",name:"Starter",price:"Gratis",period:"/bulan",features:["1 user","3 agents","POJK only","10 instruments","30-day audit trail"]},
+      {id:"pro",name:"Pro",price:"Rp 499K",period:"/bulan",features:["5 users","7 agents","POJK + DSN-MUI + ISO + BI","50 instruments","1-year audit trail","WhatsApp alerts","1,000 API req/day"],recommended:true},
+      {id:"enterprise",name:"Enterprise",price:"Rp 1.499K",period:"/bulan",features:["Unlimited users","12 agents (all tiers)","All sources + custom","Unlimited instruments","7-year audit trail","Priority WhatsApp","10,000 API req/day","Hermes self-evolution"]}
+    ];
+
+    // ─── Main App ────────────────────────────────
     function RaqibLanding() {
-      const [mobileMenu, setMobileMenu] = useState(false);
-      const [activePlan, setActivePlan] = useState("pro");
+      return html`<div style=${{fontFamily:"'Crimson Pro','Georgia',serif",color:DEEP,background:CREAM,overflowX:"hidden"}}>
 
-      return (
-        <div style={{ fontFamily: "'Crimson Pro', 'Georgia', serif", color: DEEP, background: CREAM, overflowX: "hidden" }}>
-          <style>{`
-            @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Big+Shoulders+Display:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap');
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-            @keyframes shimmer { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-            @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(200,148,62,0.3); } 50% { box-shadow: 0 0 20px 4px rgba(200,148,62,0.15); } }
-            .fade-up { animation: fadeUp 0.8s ease-out both; }
-            .fade-up-d1 { animation-delay: 0.1s; }
-            .fade-up-d2 { animation-delay: 0.2s; }
-            .fade-up-d3 { animation-delay: 0.3s; }
-            .fade-up-d4 { animation-delay: 0.4s; }
-            .btn-gold { background: linear-gradient(135deg, ${GOLD}, #A67A2E); color: #fff; border: none; padding: 14px 32px; border-radius: 8px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-            .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(200,148,62,0.3); }
-            .btn-outline { background: transparent; color: ${DEEP}; border: 1.5px solid ${GOLD}; padding: 13px 32px; border-radius: 8px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-            .btn-outline:hover { background: ${GOLD}; color: #fff; }
-          `}</style>
-
-          {/* NAVBAR */}
-          <nav style={{
-            position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-            background: "rgba(245,240,230,0.85)", backdropFilter: "blur(20px)",
-            borderBottom: `1px solid rgba(200,148,62,0.15)`,
-            padding: "0 32px",
-          }}>
-            <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", height: 64 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <ShieldLogo size={32} />
-                <span style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 800, fontSize: 22, letterSpacing: "0.04em", color: DEEP }}>RAQIB</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-                {["Features", "Agents", "Pricing", "Docs"].map(item => (
-                  <a key={item} href={`#${item.toLowerCase()}`} style={{ color: "#2D3748", textDecoration: "none", fontSize: 14, fontWeight: 400, fontFamily: "'Crimson Pro', serif" }}>{item}</a>
-                ))}
-                <a href="./dashboard.html" style={{ color: "#2D3748", textDecoration: "none", fontSize: 14, fontWeight: 400, fontFamily: "'Crimson Pro', serif" }}>Dashboard</a>
-                <button className="btn-gold" style={{ padding: "8px 20px", fontSize: 13 }}>
-                  Get started <ArrowRight size={14} />
-                </button>
-              </div>
+        <!----- NAVBAR ----->
+        <nav style=${{position:"fixed",top:0,left:0,right:0,zIndex:100,background:"rgba(245,240,230,0.85)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(200,148,62,0.15)",padding:"0 32px"}}>
+          <div style=${{maxWidth:1200,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",height:64}}>
+            <div style=${{display:"flex",alignItems:"center",gap:10}}>
+              <${ShieldLogo} size=${32}/>
+              <span style=${{fontFamily:"'Big Shoulders Display',sans-serif",fontWeight:800,fontSize:22,letterSpacing:"0.04em",color:DEEP}}>RAQIB</span>
             </div>
-          </nav>
-
-          {/* HERO */}
-          <section style={{
-            minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-            position: "relative", background: DEEP, overflow: "hidden",
-            paddingTop: 64,
-          }}>
-            <GeometricPattern opacity={0.05} />
-            <div style={{ position: "relative", zIndex: 2, textAlign: "center", maxWidth: 800, padding: "0 24px" }}>
-              <div className="fade-up" style={{
-                fontFamily: "'Noto Naskh Arabic', serif", fontSize: 48, color: GOLD,
-                marginBottom: 16, direction: "rtl",
-              }}>رقيب</div>
-              <h1 className="fade-up fade-up-d1" style={{
-                fontFamily: "'Big Shoulders Display', sans-serif", fontSize: 64,
-                fontWeight: 800, color: "#FAFAF7", lineHeight: 1.05,
-                letterSpacing: "-0.02em",
-              }}>
-                The Watchful Guardian<br />of Compliance
-              </h1>
-              <p className="fade-up fade-up-d2" style={{
-                fontSize: 19, color: GOLD_L, maxWidth: 560, margin: "24px auto 0",
-                lineHeight: 1.7, fontStyle: "italic",
-              }}>
-                12 AI agents. Zero blind spots. The only GRC platform with
-                Sharia compliance built into its DNA.
-              </p>
-              <div className="fade-up fade-up-d3" style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 40 }}>
-                <button className="btn-gold" style={{ fontSize: 16, padding: "16px 36px" }}>
-                  Start free <ArrowRight size={16} />
-                </button>
-                <button className="btn-outline" style={{ color: GOLD_L, borderColor: "rgba(232,196,122,0.3)" }}>
-                  Watch demo
-                </button>
-              </div>
-              <div className="fade-up fade-up-d4" style={{
-                display: "flex", gap: 40, justifyContent: "center", marginTop: 48,
-                fontSize: 13, color: "#64748B",
-                fontFamily: "'JetBrains Mono', monospace",
-              }}>
-                <span>POJK · DSN-MUI · ISO 37001</span>
-                <span>Hermes Agent powered</span>
-                <span>SOC 2 ready</span>
-              </div>
+            <div style=${{display:"flex",alignItems:"center",gap:32}}>
+              ${["Features","Agents","Pricing","Docs"].map(function(item){return html`<a key=${item} href=${"#"+item.toLowerCase()} style=${{color:"#2D3748",textDecoration:"none",fontSize:14,fontWeight:400,fontFamily:"'Crimson Pro',serif"}}>${item}</a>`})}
+              <a href="./dashboard.html" style=${{color:"#2D3748",textDecoration:"none",fontSize:14,fontWeight:400,fontFamily:"'Crimson Pro',serif"}}>Dashboard</a>
+              <button class="btn-gold" style=${{padding:"8px 20px",fontSize:13}}>Get started <${ArrowRight} size=${14}/></button>
             </div>
+          </div>
+        </nav>
 
-            {/* Decorative shield glow */}
-            <div style={{
-              position: "absolute", bottom: -120, left: "50%", transform: "translateX(-50%)",
-              width: 400, height: 400, borderRadius: "50%",
-              background: `radial-gradient(circle, rgba(200,148,62,0.08) 0%, transparent 70%)`,
-            }} />
-          </section>
-
-          {/* STATS BAR */}
-          <section style={{ background: "#fff", borderBottom: `1px solid rgba(200,148,62,0.1)`, padding: "48px 24px" }}>
-            <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 32, textAlign: "center" }}>
-              {[
-                { val: 12, suffix: "", label: "AI agents" },
-                { val: 26, suffix: "+", label: "Regulatory sources" },
-                { val: 99, suffix: ".7%", label: "Uptime SLA" },
-                { val: 15000, suffix: "+", label: "Target auditors in Indonesia" },
-              ].map((stat, i) => (
-                <div key={i}>
-                  <div style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontSize: 40, fontWeight: 800, color: GOLD }}>
-                    <AnimatedCounter end={stat.val} suffix={stat.suffix} />
-                  </div>
-                  <div style={{ fontSize: 14, color: "#64748B", marginTop: 4 }}>{stat.label}</div>
-                </div>
-              ))}
+        <!----- HERO ----->
+        <section style=${{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",position:"relative",background:DEEP,overflow:"hidden",paddingTop:64}}>
+          <${GeometricPattern} opacity=${0.05}/>
+          <div style=${{position:"relative",zIndex:2,textAlign:"center",maxWidth:800,padding:"0 24px"}}>
+            <div class="fade-up" style=${{fontFamily:"'Noto Naskh Arabic',serif",fontSize:48,color:GOLD,marginBottom:16,direction:"rtl"}}>رقيب</div>
+            <h1 class="fade-up fade-up-d1" style=${{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:64,fontWeight:800,color:"#FAFAF7",lineHeight:1.05,letterSpacing:"-0.02em"}}>The Watchful Guardian<br/>of Compliance</h1>
+            <p class="fade-up fade-up-d2" style=${{fontSize:19,color:GOLD_L,maxWidth:560,margin:"24px auto 0",lineHeight:1.7,fontStyle:"italic"}}>12 AI agents. Zero blind spots. The only GRC platform with Sharia compliance built into its DNA.</p>
+            <div class="fade-up fade-up-d3" style=${{display:"flex",gap:16,justifyContent:"center",marginTop:40}}>
+              <button class="btn-gold" style=${{fontSize:16,padding:"16px 36px"}}>Start free <${ArrowRight} size=${16}/></button>
+              <button class="btn-outline" style=${{color:GOLD_L,borderColor:"rgba(232,196,122,0.3)"}}>Watch demo</button>
             </div>
-          </section>
-
-          {/* FEATURES */}
-          <section id="features" style={{ padding: "96px 24px", maxWidth: 1100, margin: "0 auto" }}>
-            <div style={{ textAlign: "center", marginBottom: 64 }}>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: GOLD, letterSpacing: "0.15em", marginBottom: 12 }}>FEATURES</div>
-              <h2 style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontSize: 40, fontWeight: 800, color: DEEP }}>
-                Every compliance angle, covered.
-              </h2>
+            <div class="fade-up fade-up-d4" style=${{display:"flex",gap:40,justifyContent:"center",marginTop:48,fontSize:13,color:"#64748B",fontFamily:"'JetBrains Mono',monospace"}}>
+              <span>POJK · DSN-MUI · ISO 37001</span><span>Hermes Agent powered</span><span>SOC 2 ready</span>
             </div>
+          </div>
+          <div style=${{position:"absolute",bottom:-120,left:"50%",transform:"translateX(-50%)",width:400,height:400,borderRadius:"50%",background:"radial-gradient(circle,rgba(200,148,62,0.08) 0%,transparent 70%)"}}/>
+        </section>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
-              {[
-                { icon: Shield, title: "Regulatory monitoring", desc: "POJK, DSN-MUI, ISO, BI, OJK — scanned every 6 hours by the NIZAM agent. Classified by severity. Alerts via WhatsApp.", color: CORAL },
-                { icon: TrendingUp, title: "Portfolio tracking", desc: "Sharia-compliant instruments: sukuk, gold, mutual funds, deposits. Real-time pricing during IDX market hours.", color: TEAL },
-                { icon: FileText, title: "Audit trail", desc: "Every action logged. AURIX agent performs Benford's Law analysis and ISA 240 fraud detection on your data.", color: GOLD },
-                { icon: Bot, title: "12 AI agents", desc: "From MONI (command) to MUHTASIB (internal control). Each agent carries an Arabic name embodying its GRC role.", color: "#6366F1" },
-                { icon: Lock, title: "Schema-per-tenant", desc: "PostgreSQL isolation per organization. Your data never touches another tenant's schema. Enterprise-grade security.", color: DEEP },
-                { icon: Globe, title: "Dual payment gateway", desc: "Stripe for international. Midtrans for Indonesian customers. Pay in IDR or USD. Invoices in both languages.", color: "#2D7A4F" },
-              ].map((feat, i) => (
-                <div key={i} style={{
-                  background: "#fff", borderRadius: 12, padding: 32,
-                  border: "1px solid rgba(200,148,62,0.1)",
-                  transition: "all 0.25s",
-                }}>
-                  <div style={{
-                    width: 44, height: 44, borderRadius: 10,
-                    background: `${feat.color}12`, display: "flex",
-                    alignItems: "center", justifyContent: "center", marginBottom: 20,
-                  }}>
-                    <feat.icon size={22} color={feat.color} />
-                  </div>
-                  <h3 style={{ fontFamily: "'Crimson Pro', serif", fontSize: 20, fontWeight: 700, color: DEEP, marginBottom: 8 }}>{feat.title}</h3>
-                  <p style={{ fontSize: 14, color: "#64748B", lineHeight: 1.7 }}>{feat.desc}</p>
-                </div>
-              ))}
+        <!----- STATS ----->
+        <section style=${{background:"#fff",borderBottom:"1px solid rgba(200,148,62,0.1)",padding:"48px 24px"}}>
+          <div style=${{maxWidth:1000,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:32,textAlign:"center"}}>
+            ${[{val:12,suffix:"",label:"AI agents"},{val:26,suffix:"+",label:"Regulatory sources"},{val:99,suffix:".7%",label:"Uptime SLA"},{val:15000,suffix:"+",label:"Target auditors in Indonesia"}].map(function(s,i){return html`<div key=${i}>
+              <div style=${{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:40,fontWeight:800,color:GOLD}}><${AnimatedCounter} end=${s.val} suffix=${s.suffix}/></div>
+              <div style=${{fontSize:14,color:"#64748B",marginTop:4}}>${s.label}</div>
+            </div>`})}
+          </div>
+        </section>
+
+        <!----- FEATURES ----->
+        <section id="features" style=${{padding:"96px 24px",maxWidth:1100,margin:"0 auto"}}>
+          <div style=${{textAlign:"center",marginBottom:64}}>
+            <div style=${{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:GOLD,letterSpacing:"0.15em",marginBottom:12}}>FEATURES</div>
+            <h2 style=${{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:40,fontWeight:800,color:DEEP}}>Every compliance angle, covered.</h2>
+          </div>
+          <div style=${{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:24}}>
+            ${features.map(function(f,i){return html`<div key=${i} style=${{background:"#fff",borderRadius:12,padding:32,border:"1px solid rgba(200,148,62,0.1)",transition:"all 0.25s"}}>
+              <div style=${{width:44,height:44,borderRadius:10,background:f.color+"12",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20}}>
+                <${f.icon} size=${22} color=${f.color}/>
+              </div>
+              <h3 style=${{fontFamily:"'Crimson Pro',serif",fontSize:20,fontWeight:700,color:DEEP,marginBottom:8}}>${f.title}</h3>
+              <p style=${{fontSize:14,color:"#64748B",lineHeight:1.7}}>${f.desc}</p>
+            </div>`})}
+          </div>
+        </section>
+
+        <!----- AGENTS ----->
+        <section id="agents" style=${{background:DEEP,padding:"96px 24px",position:"relative",overflow:"hidden"}}>
+          <${GeometricPattern} opacity=${0.04}/>
+          <div style=${{maxWidth:1100,margin:"0 auto",position:"relative",zIndex:2}}>
+            <div style=${{textAlign:"center",marginBottom:56}}>
+              <div style=${{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:GOLD,letterSpacing:"0.15em",marginBottom:12}}>AGENT HIERARCHY</div>
+              <h2 style=${{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:40,fontWeight:800,color:"#FAFAF7"}}>12 agents. 3 tiers. One mission.</h2>
             </div>
-          </section>
-
-          {/* AGENTS */}
-          <section id="agents" style={{ background: DEEP, padding: "96px 24px", position: "relative", overflow: "hidden" }}>
-            <GeometricPattern opacity={0.04} />
-            <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 2 }}>
-              <div style={{ textAlign: "center", marginBottom: 56 }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: GOLD, letterSpacing: "0.15em", marginBottom: 12 }}>AGENT HIERARCHY</div>
-                <h2 style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontSize: 40, fontWeight: 800, color: "#FAFAF7" }}>
-                  12 agents. 3 tiers. One mission.
-                </h2>
+            ${agentTiers.map(function(t,i){return html`<div key=${i} style=${{marginBottom:32}}>
+              <div style=${{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:t.color,letterSpacing:"0.12em",marginBottom:12}}>${t.tier.toUpperCase()} TIER</div>
+              <div style=${{display:"flex",gap:12,flexWrap:"wrap"}}>
+                ${t.agents.map(function(a){return html`<div key=${a.id} style=${{flex:"1 1 180px",padding:"16px 20px",borderRadius:8,background:"rgba(255,255,255,0.03)",border:"1px solid "+t.color+"22"}}>
+                  <div style=${{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:20,fontWeight:700,color:"#FAFAF7"}}>${a.id}</div>
+                  <div style=${{fontSize:12,color:"#94A3B8",marginTop:4}}>${a.desc}</div>
+                </div>`})}
               </div>
-
-              {[
-                { tier: "Executive", color: GOLD, agents: [
-                  { id: "MONI", desc: "Chief Command — orchestrates all agents" },
-                  { id: "FALAH", desc: "Sharia wealth management & portfolio" },
-                  { id: "AURIX", desc: "AI audit intelligence & fraud detection" },
-                ]},
-                { tier: "Director", color: TEAL, agents: [
-                  { id: "TAKWA", desc: "Governance & ethics" },
-                  { id: "AMANAH", desc: "Risk management" },
-                  { id: "HIKMAH", desc: "Strategic intelligence" },
-                  { id: "BASYAR", desc: "HR & people analytics" },
-                ]},
-                { tier: "Lead", color: "#64748B", agents: [
-                  { id: "NIZAM", desc: "Regulatory intel" },
-                  { id: "AMAN", desc: "Cybersecurity" },
-                  { id: "RA'IS", desc: "Communications" },
-                  { id: "WASIT", desc: "Quality assurance" },
-                  { id: "MUHTASIB", desc: "Internal control" },
-                ]},
-              ].map((tier, i) => (
-                <div key={i} style={{ marginBottom: 32 }}>
-                  <div style={{
-                    fontFamily: "'JetBrains Mono', monospace", fontSize: 10,
-                    color: tier.color, letterSpacing: "0.12em", marginBottom: 12,
-                  }}>{tier.tier.toUpperCase()} TIER</div>
-                  <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                    {tier.agents.map(agent => (
-                      <div key={agent.id} style={{
-                        flex: "1 1 180px", padding: "16px 20px", borderRadius: 8,
-                        background: "rgba(255,255,255,0.03)",
-                        border: `1px solid ${tier.color}22`,
-                      }}>
-                        <div style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontSize: 20, fontWeight: 700, color: "#FAFAF7" }}>{agent.id}</div>
-                        <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 4 }}>{agent.desc}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-
-              <div style={{
-                textAlign: "center", marginTop: 40, padding: "20px 32px",
-                borderRadius: 8, background: "rgba(13,115,119,0.08)",
-                border: "1px solid rgba(13,115,119,0.15)",
-              }}>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: TEAL }}>
-                  Powered by Hermes Agent (NousResearch) — self-improving learning loop
-                </span>
-              </div>
+            </div>`})}
+            <div style=${{textAlign:"center",marginTop:40,padding:"20px 32px",borderRadius:8,background:"rgba(13,115,119,0.08)",border:"1px solid rgba(13,115,119,0.15)"}}>
+              <span style=${{fontFamily:"'JetBrains Mono',monospace",fontSize:12,color:TEAL}}>Powered by Hermes Agent (NousResearch) — self-improving learning loop</span>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* PRICING */}
-          <section id="pricing" style={{ padding: "96px 24px" }}>
-            <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-              <div style={{ textAlign: "center", marginBottom: 56 }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: GOLD, letterSpacing: "0.15em", marginBottom: 12 }}>PRICING</div>
-                <h2 style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontSize: 40, fontWeight: 800, color: DEEP }}>
-                  Three tiers of vigilance.
-                </h2>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-                {[
-                  { id: "starter", name: "Starter", price: "Gratis", period: "/bulan", features: ["1 user", "3 agents", "POJK only", "10 instruments", "30-day audit trail"] },
-                  { id: "pro", name: "Pro", price: "Rp 499K", period: "/bulan", features: ["5 users", "7 agents", "POJK + DSN-MUI + ISO + BI", "50 instruments", "1-year audit trail", "WhatsApp alerts", "1,000 API req/day"], recommended: true },
-                  { id: "enterprise", name: "Enterprise", price: "Rp 1.499K", period: "/bulan", features: ["Unlimited users", "12 agents (all tiers)", "All sources + custom", "Unlimited instruments", "7-year audit trail", "Priority WhatsApp", "10,000 API req/day", "Hermes self-evolution"] },
-                ].map(plan => (
-                  <div key={plan.id} style={{
-                    background: plan.recommended ? DEEP : "#fff",
-                    borderRadius: 16, padding: 32, position: "relative",
-                    border: plan.recommended ? "none" : "1px solid rgba(200,148,62,0.12)",
-                  }}>
-                    {plan.recommended && (
-                      <div style={{
-                        position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)",
-                        background: `linear-gradient(135deg, ${GOLD}, #A67A2E)`,
-                        color: "#fff", fontSize: 10, fontWeight: 700, padding: "4px 18px",
-                        borderRadius: 20, fontFamily: "'JetBrains Mono', monospace",
-                        letterSpacing: "0.08em",
-                      }}>RECOMMENDED</div>
-                    )}
-                    <div style={{
-                      fontFamily: "'JetBrains Mono', monospace", fontSize: 10,
-                      color: plan.recommended ? GOLD_L : "#64748B",
-                      letterSpacing: "0.1em", marginBottom: 8,
-                    }}>{plan.name.toUpperCase()}</div>
-                    <div style={{
-                      fontFamily: "'Big Shoulders Display', sans-serif", fontSize: 36,
-                      fontWeight: 800, color: plan.recommended ? GOLD : DEEP,
-                    }}>{plan.price}</div>
-                    <div style={{ fontSize: 13, color: plan.recommended ? GOLD_L : "#64748B", marginBottom: 24 }}>{plan.period}</div>
-                    <div style={{ width: "100%", height: 1, background: plan.recommended ? "rgba(232,196,122,0.15)" : "rgba(200,148,62,0.1)", marginBottom: 24 }} />
-                    {plan.features.map((f, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                        <CheckCircle size={14} color={plan.recommended ? GOLD_L : "#2D7A4F"} />
-                        <span style={{ fontSize: 14, color: plan.recommended ? "#E2E8F0" : "#2D3748" }}>{f}</span>
-                      </div>
-                    ))}
-                    <button className={plan.recommended ? "btn-gold" : "btn-outline"} style={{
-                      width: "100%", marginTop: 24, justifyContent: "center",
-                    }}>
-                      {plan.id === "starter" ? "Start free" : plan.id === "pro" ? "Get Pro" : "Contact sales"}
-                    </button>
-                  </div>
-                ))}
-              </div>
-
-              <div style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: "#64748B", fontFamily: "'JetBrains Mono', monospace" }}>
-                Stripe (international) + Midtrans (Indonesia) · Cancel anytime
-              </div>
+        <!----- PRICING ----->
+        <section id="pricing" style=${{padding:"96px 24px"}}>
+          <div style=${{maxWidth:1000,margin:"0 auto"}}>
+            <div style=${{textAlign:"center",marginBottom:56}}>
+              <div style=${{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:GOLD,letterSpacing:"0.15em",marginBottom:12}}>PRICING</div>
+              <h2 style=${{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:40,fontWeight:800,color:DEEP}}>Three tiers of vigilance.</h2>
             </div>
-          </section>
+            <div style=${{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:20}}>
+              ${plans.map(function(p){return html`<div key=${p.id} style=${{background:p.recommended?DEEP:"#fff",borderRadius:16,padding:32,position:"relative",border:p.recommended?"none":"1px solid rgba(200,148,62,0.12)"}}>
+                ${p.recommended && html`<div style=${{position:"absolute",top:-10,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,"+GOLD+",#A67A2E)",color:"#fff",fontSize:10,fontWeight:700,padding:"4px 18px",borderRadius:20,fontFamily:"'JetBrains Mono',monospace",letterSpacing:"0.08em"}}>RECOMMENDED</div>`}
+                <div style=${{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:p.recommended?GOLD_L:"#64748B",letterSpacing:"0.1em",marginBottom:8}}>${p.name.toUpperCase()}</div>
+                <div style=${{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:36,fontWeight:800,color:p.recommended?GOLD:DEEP}}>${p.price}</div>
+                <div style=${{fontSize:13,color:p.recommended?GOLD_L:"#64748B",marginBottom:24}}>${p.period}</div>
+                <div style=${{width:"100%",height:1,background:p.recommended?"rgba(232,196,122,0.15)":"rgba(200,148,62,0.1)",marginBottom:24}}/>
+                ${p.features.map(function(f,i){return html`<div key=${i} style=${{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+                  <${CheckCircle} size=${14} color=${p.recommended?GOLD_L:"#2D7A4F"}/>
+                  <span style=${{fontSize:14,color:p.recommended?"#E2E8F0":"#2D3748"}}>${f}</span>
+                </div>`})}
+                <button class=${p.recommended?"btn-gold":"btn-outline"} style=${{width:"100%",marginTop:24,justifyContent:"center"}}>${p.id==="starter"?"Start free":p.id==="pro"?"Get Pro":"Contact sales"}</button>
+              </div>`})}
+            </div>
+            <div style=${{textAlign:"center",marginTop:24,fontSize:13,color:"#64748B",fontFamily:"'JetBrains Mono',monospace"}}>Stripe (international) + Midtrans (Indonesia) · Cancel anytime</div>
+          </div>
+        </section>
 
-          {/* CTA */}
-          <section style={{
-            background: DEEP, padding: "80px 24px", textAlign: "center",
-            position: "relative", overflow: "hidden",
-          }}>
-            <GeometricPattern opacity={0.03} />
-            <div style={{ position: "relative", zIndex: 2 }}>
-              <div style={{ fontFamily: "'Noto Naskh Arabic', serif", fontSize: 32, color: GOLD, marginBottom: 16, direction: "rtl" }}>رقيب</div>
-              <h2 style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontSize: 36, fontWeight: 800, color: "#FAFAF7", marginBottom: 16 }}>
-                Your compliance is always watched.
-              </h2>
-              <p style={{ fontSize: 17, color: GOLD_L, fontStyle: "italic", marginBottom: 40 }}>
-                Start monitoring regulations, tracking portfolios, and auditing with AI — today.
-              </p>
-              <button className="btn-gold" style={{ fontSize: 16, padding: "16px 40px" }}>
-                Get started free <ArrowRight size={16} />
-              </button>
-            </div>
-          </section>
+        <!----- CTA ----->
+        <section style=${{background:DEEP,padding:"80px 24px",textAlign:"center",position:"relative",overflow:"hidden"}}>
+          <${GeometricPattern} opacity=${0.03}/>
+          <div style=${{position:"relative",zIndex:2}}>
+            <div style=${{fontFamily:"'Noto Naskh Arabic',serif",fontSize:32,color:GOLD,marginBottom:16,direction:"rtl"}}>رقيب</div>
+            <h2 style=${{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:36,fontWeight:800,color:"#FAFAF7",marginBottom:16}}>Your compliance is always watched.</h2>
+            <p style=${{fontSize:17,color:GOLD_L,fontStyle:"italic",marginBottom:40}}>Start monitoring regulations, tracking portfolios, and auditing with AI — today.</p>
+            <button class="btn-gold" style=${{fontSize:16,padding:"16px 40px"}}>Get started free <${ArrowRight} size=${16}/></button>
+          </div>
+        </section>
 
-          {/* FOOTER */}
-          <footer style={{
-            background: "#06090F", padding: "48px 24px 32px",
-            borderTop: `1px solid rgba(200,148,62,0.08)`,
-          }}>
-            <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                  <ShieldLogo size={24} dark />
-                  <span style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontSize: 18, fontWeight: 800, color: "#FAFAF7" }}>RAQIB</span>
-                </div>
-                <div style={{ fontSize: 12, color: "#64748B", lineHeight: 1.8 }}>
-                  The Watchful Guardian of Compliance<br />
-                  Built by KIM Consulting · Jakarta, Indonesia<br />
-                  Powered by Hermes Agent (NousResearch)
-                </div>
+        <!----- FOOTER ----->
+        <footer style=${{background:"#06090F",padding:"48px 24px 32px",borderTop:"1px solid rgba(200,148,62,0.08)"}}>
+          <div style=${{maxWidth:1100,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+            <div>
+              <div style=${{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+                <${ShieldLogo} size=${24} dark=${true}/>
+                <span style=${{fontFamily:"'Big Shoulders Display',sans-serif",fontSize:18,fontWeight:800,color:"#FAFAF7"}}>RAQIB</span>
               </div>
-              <div style={{ display: "flex", gap: 48 }}>
-                {[
-                  { title: "Product", links: ["Features", "Pricing", "API Docs", "Changelog"] },
-                  { title: "Resources", links: ["Blog", "Case Studies", "POJK Guide", "DSN-MUI Index"] },
-                  { title: "Company", links: ["About", "Contact", "Careers", "Security"] },
-                ].map(col => (
-                  <div key={col.title}>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: GOLD, letterSpacing: "0.1em", marginBottom: 12 }}>{col.title.toUpperCase()}</div>
-                    {col.links.map(link => (
-                      <div key={link} style={{ fontSize: 13, color: "#94A3B8", marginBottom: 8, cursor: "pointer" }}>{link}</div>
-                    ))}
-                  </div>
-                ))}
-              </div>
+              <div style=${{fontSize:12,color:"#64748B",lineHeight:1.8}}>The Watchful Guardian of Compliance<br/>Built by KIM Consulting · Jakarta, Indonesia<br/>Powered by Hermes Agent (NousResearch)</div>
             </div>
-            <div style={{
-              maxWidth: 1100, margin: "32px auto 0", paddingTop: 24,
-              borderTop: "1px solid rgba(255,255,255,0.04)",
-              display: "flex", justifyContent: "space-between",
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: "#475569",
-            }}>
-              <span>© 2026 KIM Consulting / MS Hadianto. All rights reserved.</span>
-              <div style={{ display: "flex", gap: 16 }}>
-                <a href="./dashboard.html" style={{ color: "#F59E0B", textDecoration: "none" }}>Dashboard</a>
-                <span>raqib.ai · hello@raqib.ai</span>
-              </div>
+            <div style=${{display:"flex",gap:48}}>
+              ${[{title:"Product",links:["Features","Pricing","API Docs","Changelog"]},{title:"Resources",links:["Blog","Case Studies","POJK Guide","DSN-MUI Index"]},{title:"Company",links:["About","Contact","Careers","Security"]}].map(function(col){return html`<div key=${col.title}>
+                <div style=${{fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:GOLD,letterSpacing:"0.1em",marginBottom:12}}>${col.title.toUpperCase()}</div>
+                ${col.links.map(function(link){return html`<div key=${link} style=${{fontSize:13,color:"#94A3B8",marginBottom:8,cursor:"pointer"}}>${link}</div>`})}
+              </div>`})}
             </div>
-          </footer>
-        </div>
-      );
+          </div>
+          <div style=${{maxWidth:1100,margin:"32px auto 0",paddingTop:24,borderTop:"1px solid rgba(255,255,255,0.04)",display:"flex",justifyContent:"space-between",fontFamily:"'JetBrains Mono',monospace",fontSize:10,color:"#475569"}}>
+            <span>© 2026 KIM Consulting / MS Hadianto. All rights reserved.</span>
+            <div style=${{display:"flex",gap:16}}>
+              <a href="./dashboard.html" style=${{color:"#F59E0B",textDecoration:"none"}}>Dashboard</a>
+              <span>raqib.ai · hello@raqib.ai</span>
+            </div>
+          </div>
+        </footer>
+      </div>`;
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<RaqibLanding />);
+    ReactDOM.createRoot(document.getElementById('root')).render(html`<${RaqibLanding}/>`);
+  });
   </script>
 </body>
 </html>
