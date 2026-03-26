@@ -1,0 +1,35 @@
+{
+  "name": "moni-saas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MONI — Multi-Agent GRC Command Center (Multi-Tenant SaaS)",
+  "author": "MS Hadianto <sopian@kimconsulting.id>",
+  "license": "PROPRIETARY",
+  "workspaces": [
+    "packages/shared",
+    "packages/backend",
+    "packages/frontend",
+    "packages/hermes-bridge"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm -w packages/backend run dev",
+    "dev:frontend": "npm -w packages/frontend run dev",
+    "build": "npm run build --workspaces",
+    "db:migrate": "npm -w packages/backend run db:migrate",
+    "db:seed": "npm -w packages/backend run db:seed",
+    "db:studio": "npm -w packages/backend run db:studio",
+    "docker:up": "docker compose -f infrastructure/docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f infrastructure/docker/docker-compose.yml down",
+    "hermes:migrate": "npm -w packages/hermes-bridge run migrate",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

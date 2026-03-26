@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MONI — GRC Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/lucide-react@0.460.0/dist/umd/lucide-react.min.js"></script>
+  <script src="https://unpkg.com/recharts@2.14.1/umd/Recharts.min.js"></script>
+</head>
+<body style="margin: 0; padding: 0; background: #0A0F1E;">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useCallback } = React;
+    const { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, CartesianGrid } = Recharts;
+    const { Shield, AlertTriangle, TrendingUp, Activity, Users, Bell, ChevronDown, Search, Settings, LogOut, Zap, Eye, CheckCircle, Clock, FileText, Briefcase, Bot, CreditCard, ChevronRight, Menu, X, BarChart3, PieChart: PieChartIcon, ArrowUpRight, ArrowDownRight } = lucideReact;
+
+    // Mock Data
+    const AGENTS = [
+      { id: "MONI", tier: "executive", color: "#F59E0B", status: "active", executions: 142, desc: "Chief Command" },
+      { id: "FALAH", tier: "executive", color: "#10B981", status: "active", executions: 89, desc: "Wealth Management" },
+      { id: "AURIX", tier: "executive", color: "#6366F1", status: "active", executions: 67, desc: "Audit Intelligence" },
+      { id: "TAKWA", tier: "director", color: "#EC4899", status: "idle", executions: 34, desc: "Governance & Ethics" },
+      { id: "AMANAH", tier: "director", color: "#8B5CF6", status: "active", executions: 56, desc: "Risk Management" },
+      { id: "HIKMAH", tier: "director", color: "#14B8A6", status: "idle", executions: 23, desc: "Strategic Intel" },
+      { id: "BASYAR", tier: "director", color: "#F97316", status: "idle", executions: 18, desc: "HR & People" },
+      { id: "NIZAM", tier: "lead", color: "#EF4444", status: "active", executions: 112, desc: "Regulatory Intel" },
+      { id: "AMAN", tier: "lead", color: "#06B6D4", status: "idle", executions: 29, desc: "Cybersecurity" },
+      { id: "RA'IS", tier: "lead", color: "#A855F7", status: "idle", executions: 15, desc: "Communications" },
+      { id: "WASIT", tier: "lead", color: "#84CC16", status: "idle", executions: 21, desc: "Quality Assurance" },
+      { id: "MUHTASIB", tier: "lead", color: "#D946EF", status: "active", executions: 43, desc: "Internal Control" },
+    ];
+
+    const ALERTS = [
+      { id: 1, source: "POJK", title: "POJK No. 12/2026 — Perubahan Ketentuan Perbankan Syariah", severity: "urgent", status: "new", date: "2026-03-25" },
+      { id: 2, source: "DSN-MUI", title: "Fatwa DSN-MUI No. 142 — Akad Musyarakah Mutanaqishah Digital", severity: "important", status: "acknowledged", date: "2026-03-24" },
+      { id: 3, source: "ISO", title: "ISO 37001:2026 Amendment — Anti-Bribery Management Systems", severity: "important", status: "new", date: "2026-03-23" },
+      { id: 4, source: "BI", title: "PBI No. 8/2026 — Penyelenggaraan Transfer Dana Digital", severity: "informational", status: "resolved", date: "2026-03-22" },
+      { id: 5, source: "OJK", title: "SE OJK — Pelaporan ESG untuk Lembaga Keuangan", severity: "urgent", status: "in_review", date: "2026-03-21" },
+      { id: 6, source: "POJK", title: "POJK No. 15/2026 — Tata Kelola Investasi Haji", severity: "urgent", status: "new", date: "2026-03-20" },
+    ];
+
+    const PORTFOLIO = [
+      { type: "sukuk", name: "PBS038 Sukuk Negara", qty: 500, buy: 1000000, current: 1025000, pnl: 2.5 },
+      { type: "gold", name: "Antam Gold 1g", qty: 50, buy: 1350000, current: 1420000, pnl: 5.2 },
+      { type: "mutual_fund", name: "TRIM Syariah Saham", qty: 1200, buy: 1850, current: 1920, pnl: 3.8 },
+      { type: "deposit", name: "BSI Deposito Syariah", qty: 1, buy: 100000000, current: 100000000, pnl: 0 },
+      { type: "equity", name: "BRIS (Bank Syariah)", qty: 10000, buy: 2450, current: 2680, pnl: 9.4 },
+    ];
+
+    const AUDIT_ACTIVITY = [
+      { date: "Mar 20", count: 23 }, { date: "Mar 21", count: 31 },
+      { date: "Mar 22", count: 18 }, { date: "Mar 23", count: 45 },
+      { date: "Mar 24", count: 27 }, { date: "Mar 25", count: 52 },
+      { date: "Mar 26", count: 38 },
+    ];
+
+    const PIE_DATA = [
+      { name: "Sukuk", value: 512500000, color: "#F59E0B" },
+      { name: "Gold", value: 71000000, color: "#10B981" },
+      { name: "Mutual Fund", value: 2304000, color: "#6366F1" },
+      { name: "Deposit", value: 100000000, color: "#8B5CF6" },
+      { name: "Equity", value: 26800000, color: "#EC4899" },
+    ];
+
+    // Helpers
+    const fmt = (n) => new Intl.NumberFormat("id-ID").format(n);
+    const fmtCurrency = (n) => `Rp ${fmt(n)}`;
+    const severityColor = { urgent: "#EF4444", important: "#F59E0B", informational: "#3B82F6" };
+    const statusIcon = { new: Bell, acknowledged: Eye, in_review: Clock, resolved: CheckCircle, dismissed: X };
+
+    // Components
+    function Sidebar({ active, onNav, collapsed, onToggle }) {
+      const items = [
+        { id: "overview", icon: BarChart3, label: "Overview" },
+        { id: "regulatory", icon: Shield, label: "Regulatory" },
+        { id: "portfolio", icon: TrendingUp, label: "Portfolio" },
+        { id: "audit", icon: FileText, label: "Audit Trail" },
+        { id: "agents", icon: Bot, label: "AI Agents" },
+        { id: "billing", icon: CreditCard, label: "Billing" },
+        { id: "settings", icon: Settings, label: "Settings" },
+      ];
+
+      return (
+        <div style={{
+          width: collapsed ? 64 : 240,
+          minHeight: "100vh",
+          background: "linear-gradient(180deg, #0C1222 0%, #111B33 100%)",
+          borderRight: "1px solid rgba(255,255,255,0.06)",
+          display: "flex",
+          flexDirection: "column",
+          transition: "width 0.25s cubic-bezier(.4,0,.2,1)",
+          position: "relative",
+          zIndex: 20,
+        }}>
+          {/* Logo */}
+          <div style={{ padding: collapsed ? "20px 12px" : "20px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 10,
+                background: "linear-gradient(135deg, #F59E0B, #EF4444)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontWeight: 800, fontSize: 14, color: "#fff",
+                boxShadow: "0 0 20px rgba(245,158,11,0.3)",
+              }}>M</div>
+              {!collapsed && (
+                <div>
+                  <div style={{ color: "#F8FAFC", fontWeight: 700, fontSize: 16, letterSpacing: "-0.02em" }}>MONI</div>
+                  <div style={{ color: "#64748B", fontSize: 10, fontWeight: 500, letterSpacing: "0.08em" }}>GRC COMMAND CENTER</div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Nav */}
+          <div style={{ flex: 1, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
+            {items.map((item) => {
+              const Icon = item.icon;
+              const isActive = active === item.id;
+              return (
+                <button key={item.id} onClick={() => onNav(item.id)} style={{
+                  display: "flex", alignItems: "center", gap: 12,
+                  padding: collapsed ? "10px 14px" : "10px 16px",
+                  borderRadius: 8, border: "none", cursor: "pointer",
+                  background: isActive ? "rgba(245,158,11,0.12)" : "transparent",
+                  color: isActive ? "#F59E0B" : "#94A3B8",
+                  fontWeight: isActive ? 600 : 400, fontSize: 13,
+                  transition: "all 0.15s",
+                  width: "100%", textAlign: "left",
+                }}>
+                  <Icon size={18} />
+                  {!collapsed && item.label}
+                  {isActive && !collapsed && <div style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: "#F59E0B" }} />}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Collapse toggle */}
+          <button onClick={onToggle} style={{
+            padding: 16, border: "none", background: "transparent",
+            color: "#64748B", cursor: "pointer", borderTop: "1px solid rgba(255,255,255,0.06)",
+            display: "flex", justifyContent: "center",
+          }}>
+            <Menu size={18} />
+          </button>
+        </div>
+      );
+    }
+
+    function StatCard({ icon: Icon, label, value, sub, color, trend }) {
+      return (
+        <div style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          borderRadius: 12, padding: "20px 24px",
+          display: "flex", flexDirection: "column", gap: 12,
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 10,
+              background: `${color}15`, display: "flex",
+              alignItems: "center", justifyContent: "center",
+            }}>
+              <Icon size={20} color={color} />
+            </div>
+            {trend && (
+              <div style={{
+                display: "flex", alignItems: "center", gap: 4,
+                fontSize: 12, fontWeight: 600,
+                color: trend > 0 ? "#10B981" : "#EF4444",
+              }}>
+                {trend > 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                {Math.abs(trend)}%
+              </div>
+            )}
+          </div>
+          <div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.02em" }}>{value}</div>
+            <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>{label}</div>
+          </div>
+          {sub && <div style={{ fontSize: 11, color: "#475569" }}>{sub}</div>}
+        </div>
+      );
+    }
+
+    function OverviewPage() {
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {/* Stat cards */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+            <StatCard icon={AlertTriangle} label="Unresolved Alerts" value="4" color="#EF4444" trend={-12} sub="2 urgent, 2 important" />
+            <StatCard icon={TrendingUp} label="Portfolio Value" value={fmtCurrency(710104000)} color="#10B981" trend={3.8} sub="5 Sharia-compliant instruments" />
+            <StatCard icon={Activity} label="Agent Executions" value="649" color="#6366F1" trend={24} sub="Last 30 days • 12 agents" />
+            <StatCard icon={Users} label="Team Members" value="3" color="#8B5CF6" sub="1 admin, 2 members" />
+          </div>
+
+          {/* Charts row */}
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 16 }}>
+            {/* Audit activity chart */}
+            <div style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 12, padding: 24,
+            }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#F8FAFC", marginBottom: 4 }}>Audit Trail Activity</div>
+              <div style={{ fontSize: 12, color: "#64748B", marginBottom: 20 }}>Last 7 days</div>
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={AUDIT_ACTIVITY}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis dataKey="date" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={{ background: "#1E293B", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "#F8FAFC", fontSize: 12 }} />
+                  <Bar dataKey="count" fill="#F59E0B" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Portfolio allocation pie */}
+            <div style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 12, padding: 24,
+            }}>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#F8FAFC", marginBottom: 4 }}>Asset Allocation</div>
+              <div style={{ fontSize: 12, color: "#64748B", marginBottom: 12 }}>Sharia-compliant portfolio</div>
+              <ResponsiveContainer width="100%" height={160}>
+                <PieChart>
+                  <Pie data={PIE_DATA} cx="50%" cy="50%" innerRadius={40} outerRadius={65} dataKey="value" stroke="none">
+                    {PIE_DATA.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                  </Pie>
+                  <Tooltip formatter={(v) => fmtCurrency(v)} contentStyle={{ background: "#1E293B", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "#F8FAFC", fontSize: 12 }} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+                {PIE_DATA.map((d, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#94A3B8" }}>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: d.color }} />
+                    {d.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Recent alerts */}
+          <div style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.06)",
+            borderRadius: 12, padding: 24,
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#F8FAFC" }}>Recent Regulatory Alerts</div>
+                <div style={{ fontSize: 12, color: "#64748B" }}>Monitored by NIZAM agent</div>
+              </div>
+              <div style={{ fontSize: 12, color: "#F59E0B", cursor: "pointer", fontWeight: 500 }}>View all →</div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {ALERTS.slice(0, 4).map((alert) => {
+                const StatusIcon = statusIcon[alert.status] || Bell;
+                return (
+                  <div key={alert.id} style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
+                    borderRadius: 8, background: "rgba(255,255,255,0.02)",
+                    border: "1px solid rgba(255,255,255,0.04)",
+                  }}>
+                    <div style={{
+                      width: 8, height: 8, borderRadius: "50%",
+                      background: severityColor[alert.severity],
+                      boxShadow: `0 0 8px ${severityColor[alert.severity]}40`,
+                    }} />
+                    <div style={{
+                      fontSize: 10, fontWeight: 700, color: "#94A3B8",
+                      background: "rgba(255,255,255,0.06)", padding: "2px 8px",
+                      borderRadius: 4, minWidth: 55, textAlign: "center",
+                    }}>{alert.source}</div>
+                    <div style={{ flex: 1, fontSize: 13, color: "#CBD5E1", fontWeight: 400 }}>{alert.title}</div>
+                    <StatusIcon size={14} color="#64748B" />
+                    <div style={{ fontSize: 11, color: "#475569", minWidth: 72 }}>{alert.date}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function AgentsPage() {
+      const [selectedAgent, setSelectedAgent] = useState(null);
+      const tiers = { executive: "Executive", director: "Director", lead: "Lead" };
+
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#F8FAFC" }}>AI Agent Fleet</div>
+              <div style={{ fontSize: 13, color: "#64748B" }}>12 agents across 3 tiers • Powered by Hermes Agent</div>
+            </div>
+            <div style={{
+              padding: "8px 16px", borderRadius: 8, fontSize: 12, fontWeight: 600,
+              background: "linear-gradient(135deg, #F59E0B20, #EF444420)",
+              color: "#F59E0B", border: "1px solid rgba(245,158,11,0.2)",
+            }}>
+              <Zap size={14} style={{ display: "inline", verticalAlign: "middle", marginRight: 6 }} />
+              Hermes Learning Loop Active
+            </div>
+          </div>
+
+          {Object.entries(tiers).map(([tier, label]) => (
+            <div key={tier}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>{label} Tier</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12 }}>
+                {AGENTS.filter(a => a.tier === tier).map((agent) => (
+                  <button key={agent.id} onClick={() => setSelectedAgent(agent)}
+                    style={{
+                      background: selectedAgent?.id === agent.id ? `${agent.color}12` : "rgba(255,255,255,0.03)",
+                      border: `1px solid ${selectedAgent?.id === agent.id ? `${agent.color}40` : "rgba(255,255,255,0.06)"}`,
+                      borderRadius: 12, padding: 16, cursor: "pointer", textAlign: "left",
+                      transition: "all 0.15s",
+                    }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                      <div style={{
+                        width: 32, height: 32, borderRadius: 8,
+                        background: `${agent.color}20`, display: "flex",
+                        alignItems: "center", justifyContent: "center",
+                        fontWeight: 800, fontSize: 11, color: agent.color,
+                      }}>{agent.id.slice(0, 2)}</div>
+                      <div style={{
+                        width: 8, height: 8, borderRadius: "50%",
+                        background: agent.status === "active" ? "#10B981" : "#475569",
+                        boxShadow: agent.status === "active" ? "0 0 8px #10B98150" : "none",
+                      }} />
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#F8FAFC" }}>{agent.id}</div>
+                    <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>{agent.desc}</div>
+                    <div style={{ fontSize: 11, color: "#475569", marginTop: 8 }}>{agent.executions} executions (30d)</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {selectedAgent && (
+            <div style={{
+              background: "rgba(255,255,255,0.03)",
+              border: `1px solid ${selectedAgent.color}30`,
+              borderRadius: 12, padding: 24, marginTop: 8,
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{
+                    width: 48, height: 48, borderRadius: 12,
+                    background: `${selectedAgent.color}20`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontWeight: 800, fontSize: 18, color: selectedAgent.color,
+                  }}>{selectedAgent.id.slice(0, 2)}</div>
+                  <div>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: "#F8FAFC" }}>{selectedAgent.id}</div>
+                    <div style={{ fontSize: 13, color: "#64748B" }}>{selectedAgent.desc} — {selectedAgent.tier} tier</div>
+                  </div>
+                </div>
+                <button onClick={() => setSelectedAgent(null)} style={{ background: "none", border: "none", color: "#64748B", cursor: "pointer" }}>
+                  <X size={18} />
+                </button>
+              </div>
+              <div style={{
+                background: "rgba(0,0,0,0.2)", borderRadius: 8, padding: 16,
+                fontFamily: "'JetBrains Mono', 'Fira Code', monospace", fontSize: 12,
+                color: "#94A3B8", lineHeight: 1.8,
+              }}>
+                <span style={{ color: "#F59E0B" }}>hermes</span> execute --agent {selectedAgent.id} --skill regulatory-scan<br/>
+                <span style={{ color: "#10B981" }}>✓</span> Connecting to Hermes Gateway...<br/>
+                <span style={{ color: "#10B981" }}>✓</span> Agent {selectedAgent.id} activated ({selectedAgent.tier} tier)<br/>
+                <span style={{ color: "#10B981" }}>✓</span> Skill loaded: {selectedAgent.desc.toLowerCase().replace(/\s+/g, '-')}<br/>
+                <span style={{ color: "#64748B" }}>⏳</span> Processing with model: claude-sonnet-4-20250514<br/>
+                <span style={{ color: "#6366F1" }}>→</span> {selectedAgent.executions} successful executions in last 30 days
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function RegulatoryPage() {
+      const [filter, setFilter] = useState("all");
+      const filtered = filter === "all" ? ALERTS : ALERTS.filter(a => a.severity === filter);
+
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#F8FAFC" }}>Regulatory Monitoring</div>
+              <div style={{ fontSize: 13, color: "#64748B" }}>POJK • DSN-MUI • ISO • BI • OJK — Scanned by NIZAM agent</div>
+            </div>
+            <button style={{
+              padding: "8px 20px", borderRadius: 8, border: "none", cursor: "pointer",
+              background: "linear-gradient(135deg, #F59E0B, #EF4444)",
+              color: "#fff", fontWeight: 600, fontSize: 13,
+            }}>Scan Now</button>
+          </div>
+
+          {/* Severity filters */}
+          <div style={{ display: "flex", gap: 8 }}>
+            {["all", "urgent", "important", "informational"].map(s => (
+              <button key={s} onClick={() => setFilter(s)} style={{
+                padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer",
+                background: filter === s ? (severityColor[s] || "#F59E0B") + "20" : "rgba(255,255,255,0.03)",
+                color: filter === s ? (severityColor[s] || "#F59E0B") : "#64748B",
+                fontSize: 12, fontWeight: 600, textTransform: "capitalize",
+                borderWidth: 1, borderStyle: "solid",
+                borderColor: filter === s ? (severityColor[s] || "#F59E0B") + "40" : "rgba(255,255,255,0.06)",
+              }}>{s === "all" ? `All (${ALERTS.length})` : `${s} (${ALERTS.filter(a => a.severity === s).length})`}</button>
+            ))}
+          </div>
+
+          {/* Alert list */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {filtered.map(alert => {
+              const StatusIcon = statusIcon[alert.status] || Bell;
+              return (
+                <div key={alert.id} style={{
+                  display: "flex", alignItems: "center", gap: 16, padding: "16px 20px",
+                  borderRadius: 10, background: "rgba(255,255,255,0.03)",
+                  border: `1px solid ${alert.severity === "urgent" ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.06)"}`,
+                }}>
+                  <div style={{
+                    width: 10, height: 10, borderRadius: "50%",
+                    background: severityColor[alert.severity],
+                    boxShadow: `0 0 10px ${severityColor[alert.severity]}50`,
+                    flexShrink: 0,
+                  }} />
+                  <div style={{
+                    fontSize: 10, fontWeight: 700, color: "#94A3B8",
+                    background: "rgba(255,255,255,0.06)", padding: "3px 10px",
+                    borderRadius: 4, minWidth: 65, textAlign: "center", flexShrink: 0,
+                  }}>{alert.source}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, color: "#E2E8F0", fontWeight: 500 }}>{alert.title}</div>
+                    <div style={{ fontSize: 11, color: "#475569", marginTop: 4, display: "flex", alignItems: "center", gap: 8 }}>
+                      <StatusIcon size={12} />
+                      <span style={{ textTransform: "capitalize" }}>{alert.status.replace("_", " ")}</span>
+                      <span>•</span>
+                      <span>{alert.date}</span>
+                    </div>
+                  </div>
+                  <button style={{
+                    padding: "6px 14px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)",
+                    background: "transparent", color: "#94A3B8", fontSize: 12, cursor: "pointer",
+                  }}>Review</button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    function PortfolioPage() {
+      const totalValue = PORTFOLIO.reduce((sum, h) => sum + h.qty * h.current, 0);
+      const totalCost = PORTFOLIO.reduce((sum, h) => sum + h.qty * h.buy, 0);
+      const totalPnl = totalValue - totalCost;
+      const pnlPct = ((totalPnl / totalCost) * 100).toFixed(2);
+
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "#F8FAFC" }}>Portfolio Tracker</div>
+            <div style={{ fontSize: 13, color: "#64748B" }}>Sharia-compliant holdings • Analyzed by FALAH agent</div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+            <StatCard icon={Briefcase} label="Total Portfolio Value" value={fmtCurrency(totalValue)} color="#10B981" />
+            <StatCard icon={TrendingUp} label="Unrealized P&L" value={`${totalPnl >= 0 ? "+" : ""}${fmtCurrency(totalPnl)}`} color={totalPnl >= 0 ? "#10B981" : "#EF4444"} trend={parseFloat(pnlPct)} />
+            <StatCard icon={Shield} label="Instruments" value={`${PORTFOLIO.length} Holdings`} color="#6366F1" sub="100% Sharia-compliant" />
+          </div>
+
+          {/* Holdings table */}
+          <div style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.06)",
+            borderRadius: 12, overflow: "hidden",
+          }}>
+            <div style={{
+              display: "grid", gridTemplateColumns: "1fr 1.5fr 0.8fr 1fr 1fr 0.8fr",
+              padding: "12px 20px", background: "rgba(255,255,255,0.02)",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              fontSize: 11, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.05em",
+            }}>
+              <div>Type</div><div>Name</div><div>Qty</div><div>Avg Price</div><div>Market</div><div>P&L</div>
+            </div>
+            {PORTFOLIO.map((h, i) => (
+              <div key={i} style={{
+                display: "grid", gridTemplateColumns: "1fr 1.5fr 0.8fr 1fr 1fr 0.8fr",
+                padding: "14px 20px",
+                borderBottom: i < PORTFOLIO.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+                fontSize: 13, color: "#CBD5E1", alignItems: "center",
+              }}>
+                <div style={{
+                  fontSize: 10, fontWeight: 700, color: "#94A3B8",
+                  background: "rgba(255,255,255,0.06)", padding: "2px 8px",
+                  borderRadius: 4, width: "fit-content", textTransform: "uppercase",
+                }}>{h.type}</div>
+                <div style={{ fontWeight: 500 }}>{h.name}</div>
+                <div>{fmt(h.qty)}</div>
+                <div>{fmtCurrency(h.buy)}</div>
+                <div>{fmtCurrency(h.current)}</div>
+                <div style={{ color: h.pnl >= 0 ? "#10B981" : "#EF4444", fontWeight: 600 }}>
+                  {h.pnl >= 0 ? "+" : ""}{h.pnl}%
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    function AuditPage() {
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "#F8FAFC" }}>Audit Trail</div>
+            <div style={{ fontSize: 13, color: "#64748B" }}>Complete activity log with AURIX analysis</div>
+          </div>
+
+          <div style={{
+            background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)",
+            borderRadius: 12, padding: 24,
+          }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#F8FAFC", marginBottom: 16 }}>Activity Trend (30 Days)</div>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={AUDIT_ACTIVITY}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="date" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} />
+                <YAxis tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} />
+                <Tooltip contentStyle={{ background: "#1E293B", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "#F8FAFC", fontSize: 12 }} />
+                <Line type="monotone" dataKey="count" stroke="#6366F1" strokeWidth={2} dot={{ fill: "#6366F1", r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Audit entries */}
+          <div style={{
+            background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)",
+            borderRadius: 12, overflow: "hidden",
+          }}>
+            {[
+              { action: "agent.executed", user: "Sopian Hadianto", detail: "NIZAM scanned POJK regulations", time: "2 min ago" },
+              { action: "alert.acknowledged", user: "Sopian Hadianto", detail: "Acknowledged DSN-MUI Fatwa #142", time: "15 min ago" },
+              { action: "portfolio.updated", user: "System", detail: "Price update: BRIS → Rp 2,680", time: "1 hr ago" },
+              { action: "user.login", user: "Ahmad Ridwan", detail: "Logged in from Jakarta", time: "2 hr ago" },
+              { action: "report.generated", user: "Sopian Hadianto", detail: "Q1 2026 Compliance Report", time: "5 hr ago" },
+              { action: "settings.changed", user: "Sopian Hadianto", detail: "Updated notification preferences", time: "1 day ago" },
+            ].map((entry, i) => (
+              <div key={i} style={{
+                display: "flex", alignItems: "center", gap: 16, padding: "14px 20px",
+                borderBottom: "1px solid rgba(255,255,255,0.04)",
+              }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: 8,
+                  background: "rgba(99,102,241,0.1)", display: "flex",
+                  alignItems: "center", justifyContent: "center",
+                }}>
+                  <Activity size={14} color="#6366F1" />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, color: "#E2E8F0" }}>{entry.detail}</div>
+                  <div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>{entry.user} • {entry.action}</div>
+                </div>
+                <div style={{ fontSize: 11, color: "#475569" }}>{entry.time}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    function BillingPage() {
+      const plans = [
+        { name: "Starter", price: "Gratis", priceNum: 0, features: ["1 user", "3 agents (basic)", "POJK only", "10 instruments", "30-day audit trail"], current: true },
+        { name: "Pro", price: "Rp 499.000", priceNum: 499000, features: ["5 users", "7 agents", "POJK + DSN-MUI + ISO + BI", "50 instruments", "1-year audit trail", "WhatsApp alerts", "1,000 API req/day"], current: false, recommended: true },
+        { name: "Enterprise", price: "Rp 1.499.000", priceNum: 1499000, features: ["Unlimited users", "12 agents (all tiers)", "All sources + custom", "Unlimited instruments", "7-year audit trail", "Priority WhatsApp", "10,000 API req/day", "Hermes self-evolution"], current: false },
+      ];
+
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "#F8FAFC" }}>Subscription & Billing</div>
+            <div style={{ fontSize: 13, color: "#64748B" }}>Stripe (International) • Midtrans (Indonesia)</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+            {plans.map((plan) => (
+              <div key={plan.name} style={{
+                background: plan.recommended ? "rgba(245,158,11,0.05)" : "rgba(255,255,255,0.03)",
+                border: `1px solid ${plan.recommended ? "rgba(245,158,11,0.3)" : "rgba(255,255,255,0.06)"}`,
+                borderRadius: 12, padding: 24, position: "relative",
+              }}>
+                {plan.recommended && (
+                  <div style={{
+                    position: "absolute", top: -1, left: "50%", transform: "translateX(-50%)",
+                    background: "linear-gradient(135deg, #F59E0B, #EF4444)",
+                    color: "#fff", fontSize: 10, fontWeight: 700, padding: "3px 16px",
+                    borderRadius: "0 0 8px 8px", letterSpacing: "0.05em",
+                  }}>RECOMMENDED</div>
+                )}
+                <div style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC", marginBottom: 4 }}>{plan.name}</div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: plan.recommended ? "#F59E0B" : "#F8FAFC", marginBottom: 4, letterSpacing: "-0.02em" }}>
+                  {plan.price}
+                </div>
+                <div style={{ fontSize: 11, color: "#64748B", marginBottom: 20 }}>/bulan</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
+                  {plan.features.map((f, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: "#94A3B8" }}>
+                      <CheckCircle size={14} color="#10B981" />
+                      {f}
+                    </div>
+                  ))}
+                </div>
+                <button style={{
+                  width: "100%", padding: "10px 0", borderRadius: 8, border: "none", cursor: "pointer",
+                  background: plan.current ? "rgba(255,255,255,0.06)" : plan.recommended ? "linear-gradient(135deg, #F59E0B, #EF4444)" : "rgba(255,255,255,0.1)",
+                  color: plan.current ? "#64748B" : "#fff",
+                  fontWeight: 600, fontSize: 13,
+                }}>{plan.current ? "Current Plan" : "Upgrade"}</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Main App
+    function MoniDashboard() {
+      const [page, setPage] = useState("overview");
+      const [collapsed, setCollapsed] = useState(false);
+
+      const pages = {
+        overview: OverviewPage,
+        regulatory: RegulatoryPage,
+        portfolio: PortfolioPage,
+        audit: AuditPage,
+        agents: AgentsPage,
+        billing: BillingPage,
+        settings: () => <div style={{ color: "#64748B", fontSize: 14 }}>Settings page — coming soon</div>,
+      };
+
+      const PageComponent = pages[page] || OverviewPage;
+      const pageTitle = {
+        overview: "Command Center",
+        regulatory: "Regulatory",
+        portfolio: "Portfolio",
+        audit: "Audit Trail",
+        agents: "AI Agents",
+        billing: "Billing",
+        settings: "Settings",
+      };
+
+      return (
+        <div style={{
+          display: "flex",
+          minHeight: "100vh",
+          background: "#0A0F1E",
+          fontFamily: "'DM Sans', 'Segoe UI', system-ui, sans-serif",
+          color: "#F8FAFC",
+        }}>
+          <Sidebar active={page} onNav={setPage} collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
+
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+            {/* Top bar */}
+            <div style={{
+              padding: "16px 32px",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+              display: "flex", justifyContent: "space-between", alignItems: "center",
+              background: "rgba(10,15,30,0.8)", backdropFilter: "blur(10px)",
+              position: "sticky", top: 0, zIndex: 10,
+            }}>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.02em" }}>{pageTitle[page]}</div>
+                <div style={{ fontSize: 12, color: "#64748B" }}>BPKH Compliance Team • Pro Plan</div>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 8,
+                  padding: "6px 12px", borderRadius: 8,
+                  background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)",
+                }}>
+                  <Search size={14} color="#64748B" />
+                  <span style={{ fontSize: 12, color: "#475569" }}>Search... ⌘K</span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <Bell size={18} color="#94A3B8" style={{ cursor: "pointer" }} />
+                  <div style={{
+                    position: "absolute", top: -4, right: -4,
+                    width: 16, height: 16, borderRadius: "50%",
+                    background: "#EF4444", display: "flex",
+                    alignItems: "center", justifyContent: "center",
+                    fontSize: 9, fontWeight: 700, color: "#fff",
+                  }}>4</div>
+                </div>
+                <div style={{
+                  width: 32, height: 32, borderRadius: 8,
+                  background: "linear-gradient(135deg, #F59E0B, #10B981)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontWeight: 700, fontSize: 13, color: "#fff", cursor: "pointer",
+                }}>SH</div>
+              </div>
+            </div>
+
+            {/* Page content */}
+            <div style={{ padding: 32, flex: 1, overflow: "auto" }}>
+              <PageComponent />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<MoniDashboard />);
+  </script>
+</body>
+</html>

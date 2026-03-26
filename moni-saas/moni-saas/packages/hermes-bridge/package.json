@@ -1,0 +1,16 @@
+{
+  "name": "@moni/hermes-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "migrate": "tsx src/skills/migrate-openclaw.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "tsx": "^4.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}

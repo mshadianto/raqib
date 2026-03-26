@@ -1,0 +1,81 @@
+# infrastructure/k8s/backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moni-api
+  labels:
+    app: moni-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: moni-api
+  template:
+    metadata:
+      labels:
+        app: moni-api
+    spec:
+      containers:
+        - name: moni-api
+          image: ghcr.io/mshadianto/moni-saas-api:latest
+          ports:
+            - containerPort: 4000
+          envFrom:
+            - secretRef:
+                name: moni-api-secrets
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moni-api-svc
+spec:
+  selector:
+    app: moni-api
+  ports:
+    - port: 80
+      targetPort: 4000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: moni-api-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+spec:
+  tls:
+    - hosts:
+        - api.moni.kimconsulting.id
+      secretName: moni-api-tls
+  rules:
+    - host: api.moni.kimconsulting.id
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: moni-api-svc
+                port:
+                  number: 80
